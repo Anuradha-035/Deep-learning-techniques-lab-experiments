@@ -1,0 +1,84 @@
+# Step 1: Import Libraries
+import torch
+import torch.nn as nn
+import torch.optim as optim
+from sklearn.datasets import load_iris
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+from sklearn.metrics import classification_report, confusion_matrix, accuracy_score
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# Step 2: Load the Iris Dataset
+iris = load_iris()
+X = iris.data
+y = iris.target
+
+# Step 3: Train-Test Split
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.3, random_state=42, stratify=y
+)
+
+# Scale features (important for optimization)
+scaler = StandardScaler()
+X_train = scaler.fit_transform(X_train)
+X_test = scaler.transform(X_test)
+
+# Convert to PyTorch tensors
+X_train = torch.tensor(X_train, dtype=torch.float32)
+X_test = torch.tensor(X_test, dtype=torch.float32)
+y_train = torch.tensor(y_train, dtype=torch.long)
+y_test = torch.tensor(y_test, dtype=torch.long)
+
+# Step 4: Define Logistic Regression Model in PyTorch
+class LogisticRegressionModel(nn.Module):
+    def __init__(self, input_dim, output_dim):
+        super(LogisticRegressionModel, self).__init__()
+        self.linear = nn.Linear(input_dim, output_dim)
+
+    def forward(self, x):
+        return self.linear(x)
+
+input_dim = X_train.shape[1]   # 4 features
+output_dim = len(iris.target_names)  # 3 classes
+model = LogisticRegressionModel(input_dim, output_dim)
+
+# Step 5: Loss and Optimizer
+criterion = nn.CrossEntropyLoss()
+optimizer = optim.Adam(model.parameters(), lr=0.01)
+
+# Step 6: Training Loop
+epochs = 200
+for epoch in range(epochs):
+    # Forward pass
+    outputs = model(X_train)
+    loss = criterion(outputs, y_train)
+
+    # Backward pass
+    optimizer.zero_grad()
+    loss.backward()
+    optimizer.step()
+
+    if (epoch+1) % 50 == 0:
+        print(f"Epoch [{epoch+1}/{epochs}], Loss: {loss.item():.4f}")
+
+# Step 7: Evaluation
+model.eval()
+with torch.no_grad():
+    y_pred = model(X_test)
+    _, predicted = torch.max(y_pred, 1)
+
+acc = accuracy_score(y_test, predicted)
+print("\nAccuracy:", acc)
+print("\nClassification Report:\n", classification_report(y_test, predicted))
+cm = confusion_matrix(y_test, predicted)
+print("\nConfusion Matrix:\n", cm)
+
+# Step 8: Visualize Confusion Matrix
+plt.figure(figsize=(6,4))
+sns.heatmap(cm, annot=True, fmt='d', cmap='Blues',
+            xticklabels=iris.target_names, yticklabels=iris.target_names)
+plt.title("Confusion Matrix (PyTorch)")
+plt.xlabel("Predicted")
+plt.ylabel("Actual")
+plt.show()
