@@ -1,0 +1,18 @@
+import matplotlib.pyplot as plt
+
+# Example loss values recorded during training
+# Replace this with actual loss values from your training loop
+losses = [
+    0.95, 0.82, 0.70, 0.60, 0.52,
+    0.45, 0.39, 0.34, 0.30, 0.27,
+    0.24, 0.22, 0.20, 0.18, 0.16
+]
+
+# Plot training loss
+plt.plot(losses)
+plt.xlabel("Epochs")
+plt.ylabel("Loss")
+plt.title("Training Loss Curve")
+plt.grid(True)
+
+plt.show()
