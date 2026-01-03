@@ -1,0 +1,22 @@
+import torch
+from torchvision import models
+
+# Step 1: Load pre-trained ResNet-50
+model = models.resnet50(weights=models.ResNet50_Weights.DEFAULT)
+print("Model loaded successfully.")
+
+# Step 2: Print full architecture
+print(model)
+
+ #Step 3: Count total parameters
+total_params = sum(p.numel() for p in model.parameters() if p.requires_grad)
+print(f"Total trainable parameters: {total_params}")
+
+# Step 4: inspect specific layers
+print("First convolutional layer:\n", model.conv1)
+print("\nFinal fully connected layer:\n", model.fc)
+
+# Step 5: torchsummary visualization
+from torchsummary import summary
+summary(model, (3, 224, 224))
+summary(model, (3, 224, 224))
