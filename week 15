@@ -1,0 +1,12 @@
+#LAB15
+Algorithm
+Install YOLOv8
+Load pretrained model
+Perform detection on sample image
+View results
+#####
+!pip install ultralytics
+from ultralytics import YOLO
+model = YOLO('yolov8n.pt')  # nano model
+results = model('https://ultralytics.com/images/bus.jpg')
+results[0].show()
