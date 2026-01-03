@@ -1,0 +1,28 @@
+import torch.nn as nn
+
+class LSTMModel(nn.Module):
+    def __init__(self, input_size, hidden_size, num_layers, output_size):
+        super(LSTMModel, self).__init__()
+        self.hidden_size = hidden_size
+        self.num_layers = num_layers
+        self.lstm = nn.LSTM(input_size, hidden_size, num_layers, batch_first=True)
+        self.linear = nn.Linear(hidden_size, output_size)
+
+…model = LSTMModel(input_size, hidden_size, num_layers, output_size)
+
+# Print the model architecture
+print(model)
+ 1. Generate a separate test dataset
+num_samples_test = 200
+sine_data_test = generate_sine_wave(seq_length, num_samples_test)
+
+# 2. Create a TimeSeriesDataset and DataLoader for test data
+test_dataset = TimeSeriesDataset(sine_data_test)
+test_dataloader = DataLoader(test_dataset, batch_size=32, shuffle=False) # Shuffle is False for consistent evaluation
+
+# 3. Set the model to evaluation mode
+model.eval()
+…    plt.legend()
+
+plt.tight_layout()
+plt.show()
