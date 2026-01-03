@@ -1,0 +1,74 @@
+import torch
+import torch.nn as nn
+import torch.optim as optim
+from torchvision import datasets, transforms
+from torch.utils.data import DataLoader
+import matplotlib.pyplot as plt
+
+# 1. Device configuration
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+…train_loader = DataLoader(train_dataset, batch_size=64, shuffle=True)
+test_loader = DataLoader(test_dataset, batch_size=64, shuffle=False)class Autoencoder(nn.Module):
+    def __init__(self):
+        super(Autoencoder, self).__init__()
+        # Encoder
+        self.encoder = nn.Sequential(
+            nn.Linear(28 * 28, 128),
+            nn.ReLU(),
+            nn.Linear(128, 64),
+            nn.ReLU(),
+            nn.Linear(64, 12),
+…        return decoded
+
+# Instantiate the model and move to device
+model = Autoencoder().to(device)
+print(model)# 4. Loss and optimizer
+criterion = nn.MSELoss()
+optimizer = optim.Adam(model.parameters(), lr=1e-3)
+
+# 5. Training parameters
+num_epochs = 20
+
+# 6. Training the model
+print("Starting training...")
+for epoch in range(num_epochs):
+ for data in train_loader:
+        images, _ = data
+        images = images.to(device)
+
+        # Forward pass
+        reconstructed_images = model(images)
+        loss = criterion(reconstructed_images, images)
+
+        # Backward and optimize
+        optimizer.zero_grad()
+        loss.backward()
+        optimizer.step()
+
+    print(f'Epoch [{epoch+1}/{num_epochs}], Loss: {loss.item():.4f}')
+
+print("Training finished.")# Get a batch of images from the test_loader
+dataiter = iter(test_loader)
+images, labels = next(dataiter)
+images = images.to(device)
+
+# Pass the original images through the trained model to get the reconstructed images
+reconstructed_images = model(images)
+
+# Select a subset of original and reconstructed images to visualize (e.g., the first 10)
+n = 10
+…plt.show()# 1. Select a small sample of images from the test_loader.
+# We can reuse the images and reconstructed images from the previous visualization step.
+# Let's use the first 10 images from the previous batch.
+sample_original_images = original_images_subset
+sample_reconstructed_images = reconstructed_images_subset
+
+# 2. Pass the selected original images through the encoder part of the trained model to obtain the compressed representation (latent vectors).
+# Ensure the input is flattened as expected b…ructed_images (on CPU, detached) - let's use the one calculated explicitly from compressed representation
+sample_compressed_representation = sample_compressed_representation.cpu().detach()
+sample_reconstructed_images = sample_reconstructed_images_from_compressed
+
+print("Sample original images shape:", sample_original_images.shape)
+print("Sample compressed representation shape:", sample_compressed_representation.shape)
+print("Sample reconstructed images shape:", sample_reconstructed_images.shape)
