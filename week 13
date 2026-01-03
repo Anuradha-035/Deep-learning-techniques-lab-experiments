@@ -1,0 +1,11 @@
+# LAB 13: Understanding the Architecture of a Pre-trained Model
+# Dataset: CIFAR-10 (Open Source)
+# Model: ResNet18 (Pre-trained on ImageNet)
+# Algorithm
+# Import VGG16
+# Display summary
+# Identify layers & parameters
+####
+from tensorflow.keras.applications import VGG16
+model = VGG16()
+model.summary()
